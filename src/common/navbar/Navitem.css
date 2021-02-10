@@ -1,0 +1,18 @@
+html {
+  --cvt19icon-background-color: white;
+  --cvt19icon-background-color-on-hover: rgb(204, 199, 199);
+}
+
+.cvt19icon-button {
+  width: 35px;
+  height: 35px;
+  background-color: var(--cvt19icon-background-color);
+  border-radius: 50%;
+  padding: 5px;
+  margin: 2px;
+}
+
+.cvt19icon-button:hover {
+  background-color: var(--cvt19icon-background-color-on-hover);
+  cursor: pointer;
+}

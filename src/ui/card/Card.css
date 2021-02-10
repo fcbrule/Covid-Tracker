@@ -1,0 +1,15 @@
+html {
+  --cvt19text-color: rgb(255, 255, 255);
+  --cvt19background-color: rgb(0, 0, 255);
+}
+
+.cvt19card {
+  width: 250px;
+  height: 200px;
+  color: var(--cvt19text-color);
+  text-align: center;
+  border-radius: 20px;
+  padding: 10px 0;
+  margin: 10px;
+  background-color: var(--cvt19background-color);
+}

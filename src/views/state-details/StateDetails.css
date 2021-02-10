@@ -1,0 +1,34 @@
+html {
+  --cvt19table-text-color: white;
+  --cvt19heading-text-color: white;
+}
+
+.cvt19details {
+  display: flex;
+  justify-content: center;
+}
+
+.cvt19table {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  color: var(--cvt19table-text-color);
+}
+
+.cvt19heading {
+  color: var(--cvt19heading-text-color);
+  padding-bottom: 20px;
+}
+
+.cvt19card-title {
+  font-size: 28px;
+}
+
+.cvt19card-value-change {
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+.cvt19card-value {
+  font-size: 30px;
+}

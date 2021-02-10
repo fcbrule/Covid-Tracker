@@ -1,0 +1,43 @@
+html {
+  --cvt19table-row-background-color: purple;
+  --cvt19even-table-row-background-color: rgb(100, 19, 167);
+  --cvt19table-row-background-color-on-hover: rgb(48, 35, 61);
+  --cvt19table-headers-background-color: rgb(100, 19, 167);
+  --cvt19table-headers-background-color-on-hover: rgb(48, 35, 61);
+}
+
+.cvt19table-headers {
+  display: flex;
+  background-color: var(--cvt19table-headers-background-color);
+  text-decoration: inherit;
+}
+
+.cvt19table-headers-cell {
+  display: flex;
+}
+.cvt19table-headers-cell:hover {
+  background-color: var(--cvt19table-headers-background-color-on-hover);
+}
+
+.cvt19table-row {
+  display: flex;
+  cursor: default;
+  text-decoration: inherit;
+  background-color: var(--cvt19table-row-background-color);
+}
+
+.cvt19row-cell {
+  display: flex;
+}
+
+.cvt19table-row:hover {
+  background-color: var(--cvt19table-row-background-color-on-hover);
+}
+
+.cvt19table-row:nth-of-type(even) {
+  background-color: var(--cvt19even-table-row-background-color);
+}
+
+.cvt19table-row:nth-of-type(even):hover {
+  background-color: var(--cvt19table-row-background-color-on-hover);
+}

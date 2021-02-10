@@ -1,0 +1,14 @@
+html {
+  --cvt19dropdown--background-color: black;
+}
+
+.cvt19dropdown {
+  position: absolute;
+  top: 70px;
+  right: 15px;
+  width: 700px;
+  padding: 10px;
+  border-radius: 15px;
+  background-color: var(--cvt19dropdown--background-color);
+  z-index: 2;
+}

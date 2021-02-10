@@ -1,0 +1,24 @@
+html {
+  --cvt19text-color: rgb(255, 255, 255);
+  --cvt19border-color: rgb(0, 0, 0);
+}
+
+.cvt19table-cell {
+  display: flex;
+  flex-direction: column;
+  width: 175px;
+  text-align: center;
+  justify-content: center;
+  color: var(--cvt19text-color);
+  font-size: 23px;
+  word-wrap: break-word;
+  border: 1px solid var(--cvt19border-color);
+  padding: 10px;
+
+  cursor: pointer;
+}
+
+.cvt19cell-value-change {
+  font-size: 20px;
+  opacity: 0.8;
+}

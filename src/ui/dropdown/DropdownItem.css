@@ -1,0 +1,10 @@
+html {
+  --cvt19dropdown-item-color: rgb(8, 9, 77);
+}
+
+.cvt19dropdown-item {
+  background-color: var(--cvt19dropdown-item-color);
+  padding: 5px;
+  border-radius: 10px;
+  margin: 10px;
+}

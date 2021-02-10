@@ -1,0 +1,15 @@
+.cvt19navbar {
+  height: 80px;
+  margin-bottom: 20px;
+  padding-right: 25px;
+}
+
+.cvt19navbar-notification {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
