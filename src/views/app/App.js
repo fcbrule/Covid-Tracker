@@ -9,13 +9,13 @@ import {
 
 // import { connect } from "react-redux";
 
-import SearchBar from "../../common/search-bar";
-import Navbar, { NavItem } from "../../common/navbar";
+import SearchBar from "../../common/covid-search-bar";
+import Navbar, { NavItem } from "../../ui/navbar";
 
 import getAllSearchBarSuggestions from "../../utils/helpers/getAllSearchBarSuggestions";
 import { ReactComponent as BellIcon } from "../../utils/icons/bell.svg";
 import webRoutes from "../../utils/router/webRoutes";
-import { getStatesData, getUpdates } from "../../utils/api/statesData";
+import { getStatesData, getUpdatesLog } from "../../utils/api/statesData";
 import formatUpdatesLog from "../../utils/helpers/formatUpdatesLog";
 
 import StateDetails from "../state-details";
@@ -24,86 +24,93 @@ import DropdownMenu, { DropdownItem } from "../../ui/dropdown";
 import "./App.css";
 // import { fetchStates } from "../../actions";
 
+import lscache from "lscache";
+import {
+  getCachedStatesData,
+  getCachedUpdatesLog,
+} from "../../utils/storage/getDataFromCache";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { statesData: {}, rows: [], updatesLog: [] };
+    this.state = {
+      statesData: {},
+      rows: [],
+      updatesLog: [],
+      statesDataLoaded: false,
+      updatesLogLoaded: false,
+    };
   }
   componentDidMount = async () => {
-    this.props.fetchStates();
-    await getStatesData().then((result) =>
-      this.setState({ statesData: result.data })
-    );
+    const statesData = lscache.get("statesData");
+    if (statesData !== null) {
+      this.setState({ statesData, statesDataLoaded: true });
+    } else {
+      await getStatesData().then((result) => {
+        lscache.set("statesData", result.data, 60);
+        this.setState({ statesData: result.data, statesDataLoaded: true });
+      });
+    }
 
-    await getUpdates().then((result) =>
-      this.setState({ updatesLog: result.data })
-    );
+    const updatesLog = lscache.get("updatesLog");
+    if (updatesLog !== null) {
+      this.setState({ updatesLog, updatesLogLoaded: true });
+    } else {
+      await getUpdatesLog().then((result) => {
+        const formattedUpdatesLog = formatUpdatesLog(result.data);
+        lscache.set("updatesLog", formattedUpdatesLog, 60);
+        this.setState({
+          updatesLog: formattedUpdatesLog,
+          updatesLogLoaded: true,
+        });
+      });
+    }
+
+    // await getCachedUpdatesLog().then(
+    //   (updatesLog) => {
+    //     this.setState({ updatesLog, updatesLogLoaded: true });
+    //   },
+    //   (reject) => console.log(reject)
+    // );
+
+    // await getCachedStatesData().then(
+    //   (statesData) => {
+    //     console.log(statesData);
+    //     this.setState({ statesData, statesDataLoaded: true });
+    //   },
+    //   (reject) => console.log(reject)
+    // );
   };
 
-  getRouter() {
-    const { statesData } = this.state;
+  getDropdown() {
+    const { updatesLog, updatesLogLoaded } = this.state;
 
-    const locationsList = getAllSearchBarSuggestions(statesData);
+    if (!updatesLogLoaded) return <DropdownMenu>Loading...</DropdownMenu>;
 
-    return (
-      <Router>
-        <div className="cvt19app-search-bar">
-          Search for your district or state
-          <SearchBar items={locationsList} />
-        </div>
+    if (updatesLog === {}) return <DropdownMenu>No Updates</DropdownMenu>;
+    else {
+      return (
+        <DropdownMenu>
+          {Object.keys(updatesLog).map((date) => (
+            <div>
+              <div className="cvt19notfication-date">{date}</div>
+              {Object.keys(updatesLog[date]).map((relativeTime) => (
+                <DropdownItem>
+                  <div className="cvt19notfication-time">{relativeTime}</div>
 
-        <Switch>
-          {Object.keys(webRoutes).map((route) => (
-            <Route
-              key={webRoutes[route]}
-              path={webRoutes[route]}
-              exact
-              render={({ match }) => (
-                <StateDetails data={statesData} match={match} />
-              )}
-            />
+                  {updatesLog[date][relativeTime].map((update) => (
+                    <div className="cvt19notfication-text">{update}</div>
+                  ))}
+                </DropdownItem>
+              ))}
+            </div>
           ))}
-
-          <Route render={() => <Redirect to={{ pathname: "/" }} />} />
-        </Switch>
-      </Router>
-    );
-  }
-
-  getDropdown(formattedUpdatesLog) {
-    return (
-      <DropdownMenu>
-        {Object.keys(formattedUpdatesLog).map((date) => (
-          <div>
-            <div className="cvt19notfication-date">{date}</div>
-            {Object.keys(formattedUpdatesLog[date]).map((relativeTime) => (
-              <DropdownItem>
-                <div className="cvt19notfication-time">{relativeTime}</div>
-
-                {formattedUpdatesLog[date][relativeTime].map((update) => (
-                  <div className="cvt19notfication-text">{update}</div>
-                ))}
-              </DropdownItem>
-            ))}
-          </div>
-        ))}
-      </DropdownMenu>
-    );
+        </DropdownMenu>
+      );
+    }
   }
 
   getNotificationsIcon() {
-    const { updatesLog } = this.state;
-
-    const formattedUpdatesLog = formatUpdatesLog(updatesLog);
-
-    if (formattedUpdatesLog === {}) return "";
-    else {
-      return (
-        <NavItem icon={<BellIcon />}>
-          {this.getDropdown(formattedUpdatesLog)}
-        </NavItem>
-      );
-    }
+    return <NavItem icon={<BellIcon />}>{this.getDropdown()}</NavItem>;
   }
 
   getNavbar() {
@@ -114,8 +121,56 @@ class App extends React.Component {
       </Navbar>
     );
   }
+
+  getSearchBar() {
+    const { statesData } = this.state;
+
+    const locationsList = getAllSearchBarSuggestions(statesData);
+
+    return (
+      <div className="cvt19app-search-bar">
+        Search for your district or state
+        <SearchBar items={locationsList} />
+      </div>
+    );
+  }
+
+  getRoutes() {
+    const { statesData } = this.state;
+
+    return (
+      <Switch>
+        {Object.keys(webRoutes).map((route) => (
+          <Route
+            key={webRoutes[route]}
+            path={webRoutes[route]}
+            exact
+            render={({ match }) => (
+              <StateDetails data={statesData} match={match} />
+            )}
+          />
+        ))}
+
+        <Route render={() => <Redirect to={{ pathname: "/" }} />} />
+      </Switch>
+    );
+  }
+
+  getRouter() {
+    const { statesDataLoaded } = this.state;
+
+    if (!statesDataLoaded) return "Loading...";
+
+    return (
+      <Router>
+        {this.getSearchBar()}
+
+        {this.getRoutes()}
+      </Router>
+    );
+  }
+
   render() {
-    console.log(this.props);
     return (
       <div className="cvt19app">
         <div className="cvt19app-navbar">{this.getNavbar()}</div>

@@ -7,8 +7,10 @@ html {
   top: 70px;
   right: 15px;
   width: 700px;
+  max-height: 80vh;
   padding: 10px;
   border-radius: 15px;
+  overflow-y: scroll;
   background-color: var(--cvt19dropdown--background-color);
   z-index: 2;
 }

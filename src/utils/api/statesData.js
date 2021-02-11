@@ -5,7 +5,7 @@ export function getStatesData() {
   return axios.get(url);
 }
 
-export function getUpdates() {
+export function getUpdatesLog() {
   const url = "https://api.covid19india.org/updatelog/log.json";
   return axios.get(url);
 }

@@ -27,14 +27,17 @@ function isMoreThan24Hours(current, older) {
 }
 
 function formatUpdatesLog(updatesLog) {
-  if (updatesLog === []) return {};
+  console.log(updatesLog);
+
+  if (updatesLog.length === 0) return [];
+  console.log(updatesLog);
   updatesLog.reverse();
   let updates = {};
   const currentTimestamp = +new Date();
   updatesLog.map((updateObject) => {
     let { timestamp, update } = updateObject;
     const dateObject = new Date(timestamp * 1000);
-    if (isMoreThan24Hours(currentTimestamp, timestamp * 1000)) return updates;
+    // if (isMoreThan24Hours(currentTimestamp, timestamp * 1000)) return updates;
     const relativeTime = getRelativeTime(currentTimestamp, timestamp * 1000);
     const date = dateObject.getDate();
     const month = dateObject.toLocaleString("default", { month: "short" });
@@ -45,7 +48,12 @@ function formatUpdatesLog(updatesLog) {
     if (updates[fullDate][relativeTime] === undefined) {
       updates[fullDate][relativeTime] = [];
     }
-    updates[fullDate][relativeTime].push(update);
+
+    const refactoredUpdates = update.split("\n");
+    refactoredUpdates.pop();
+    updates[fullDate][relativeTime] = refactoredUpdates;
+
+    // refactoredUpdates.map((update))
   });
 
   return updates;

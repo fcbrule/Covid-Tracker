@@ -1,4 +1,4 @@
-const states = {
+const STATES = {
   AN: "Andaman and Nicobar Islands",
   AP: "Andhra Pradesh",
   AR: "Arunachal Pradesh",
@@ -38,4 +38,4 @@ const states = {
   WB: "West Bengal",
 };
 
-export default states;
+export default STATES;

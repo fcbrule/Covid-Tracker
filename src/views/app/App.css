@@ -47,14 +47,14 @@ html {
 
 .cvt19notfication-time {
   text-align: left;
-  font-size: 20px;
+  font-size: 18px;
   color: var(--cvt19notification-time-text-color);
   padding-bottom: 6px;
 }
 
 .cvt19notfication-text {
   text-align: left;
-  font-size: 18px;
+  font-size: 21px;
   padding-bottom: 8px;
   color: var(--cvt19notification-text-color);
 }

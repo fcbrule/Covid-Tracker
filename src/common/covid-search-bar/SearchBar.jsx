@@ -10,6 +10,7 @@ class SearchBar extends React.Component {
     this.state = { searchTerm: "Search...", suggestions: [] };
   }
 
+  //whenever text is changed update the suggestions array
   onTextChanged = (e) => {
     const searchTerm = e.target.value;
     this.setState({ searchTerm });
@@ -25,11 +26,13 @@ class SearchBar extends React.Component {
     this.setState({ suggestions });
   };
 
+  //reset search bar when suggestion is clicked
   handleSuggestionClick = (e) => {
     this.setState({ searchTerm: "", suggestions: [] });
   };
 
-  handleInputClick = (e) => {
+  //Clear the default text when search  bar is clicked
+  handleSearchBarClick = (e) => {
     const { searchTerm } = this.state;
     if (searchTerm === "Search...") {
       this.setState({ searchTerm: "" });
@@ -63,16 +66,11 @@ class SearchBar extends React.Component {
     );
   }
 
-  onFormSubmit = (e) => {
-    e.preventDefault();
-    this.props.onSubmit(this.state.searchTerm);
-  };
-
   render() {
     return (
       <div className="cvt19search-bar">
         <input
-          onClick={this.handleInputClick}
+          onClick={this.handleSearchBarClick}
           type="text"
           value={this.state.searchTerm}
           onChange={(e) => this.onTextChanged(e)}

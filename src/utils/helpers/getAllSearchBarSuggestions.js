@@ -1,6 +1,8 @@
 import states from "../constant/states";
 
 function getAllSearchBarSuggestions(statesData) {
+  if (statesData === null || statesData === undefined) return [];
+
   let locationsList = [];
   Object.keys(statesData).forEach((stateCode) => {
     const state = states[stateCode];

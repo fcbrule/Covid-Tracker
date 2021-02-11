@@ -1,12 +1,12 @@
 import React from "react";
 
-import Table from "../../common/table";
+import Table from "../../common/covid-table";
 
 import getLocationStats from "../../utils/helpers/getLocationStats";
 import getTableRows from "../../utils/helpers/getTableRows";
 import states from "../../utils/constant/states";
 import insertCommasInNumbers from "../../utils/helpers/insertCommasInNumber";
-import cardStyles from "../../utils/constant/cardStlyes";
+import CARD_STYLES from "../../utils/constant/cardStlyes";
 
 import Card from "../../ui/card";
 
@@ -36,7 +36,9 @@ class StateDetails extends React.Component {
 
   getTableRows = (data) => {
     if (data === {}) return [];
+
     const stateCode = this.getStateCode();
+
     return getTableRows(data, stateCode);
   };
 
@@ -94,7 +96,7 @@ class StateDetails extends React.Component {
     const cardData = this.getCardData(data);
 
     return cardData.map((item) => (
-      <Card style={cardStyles[item.type]} key={item.type}>
+      <Card style={CARD_STYLES[item.type]} key={item.type}>
         <p className="cvt19card-title">{item.type}</p>
         <p className="cvt19card-value-change">
           {item.change === undefined ? (

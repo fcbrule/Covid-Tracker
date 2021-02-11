@@ -1,7 +1,7 @@
 import states from "../constant/states";
 
 function getTableRows(statesData, stateCode) {
-  if (statesData === {}) return [];
+  if (statesData === {} || statesData === undefined) return [];
   let rows = [];
   if (stateCode === "TT") {
     Object.keys(statesData).forEach((state) => {

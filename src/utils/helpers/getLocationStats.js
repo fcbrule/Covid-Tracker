@@ -1,6 +1,6 @@
 function getLocationStats(statesData, stateCode) {
-  if (statesData === {}) return [];
-
+  if (statesData === {} || statesData === undefined) return [];
+  console.log(statesData);
   if (statesData[stateCode] === undefined) return [];
   if (statesData[stateCode].total === undefined) return [];
   const confirmedCount = statesData[stateCode].total.confirmed,
