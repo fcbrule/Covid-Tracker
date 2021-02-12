@@ -27,10 +27,7 @@ function isMoreThan24Hours(current, older) {
 }
 
 function formatUpdatesLog(updatesLog) {
-  console.log(updatesLog);
-
-  if (updatesLog.length === 0) return [];
-  console.log(updatesLog);
+  if (updatesLog.length === 0) return {};
   updatesLog.reverse();
   let updates = {};
   const currentTimestamp = +new Date();

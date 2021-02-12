@@ -1,5 +1,6 @@
 html {
   --cvt19app-search-label-text-color: rgb(255, 255, 255);
+  --cvt19app-text-color: rgb(255, 255, 255);
   --cvt19app-background-color: rgb(16, 44, 13);
   --cvt19navbar-background-color: rgba(12, 24, 10, 0.8);
   --cvt19navbar-text-color: white;
@@ -13,6 +14,7 @@ html {
   text-align: center;
   background-color: var(--cvt19app-background-color);
   align-items: center;
+  color: var(--cvt19app-text-color);
   justify-content: center;
   min-height: 100vh;
 }

@@ -48,7 +48,7 @@ html {
   text-decoration: none;
 }
 
-.cvt19search-options span {
+.cvt19search-options-adornment {
   float: right;
   padding-right: 5px;
   color: var(--cvt19search-bar-suggestions-icon-color);

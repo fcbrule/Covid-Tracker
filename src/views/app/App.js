@@ -9,7 +9,7 @@ import {
 
 // import { connect } from "react-redux";
 
-import SearchBar from "../../common/covid-search-bar";
+import SearchBar from "../../ui/search-bar";
 import Navbar, { NavItem } from "../../ui/navbar";
 
 import getAllSearchBarSuggestions from "../../utils/helpers/getAllSearchBarSuggestions";
@@ -41,53 +41,57 @@ class App extends React.Component {
     };
   }
   componentDidMount = async () => {
-    const statesData = lscache.get("statesData");
-    if (statesData !== null) {
+    // const statesData = lscache.get("statesData");
+    // if (statesData !== null) {
+    //   this.setState({ statesData, statesDataLoaded: true });
+    // } else {
+    //   await getStatesData().then((result) => {
+    //     lscache.set("statesData", result.data, 60);
+    //     this.setState({ statesData: result.data, statesDataLoaded: true });
+    //   });
+    // }
+
+    // const updatesLog = lscache.get("updatesLog");
+    // if (updatesLog !== null) {
+    //   this.setState({ updatesLog, updatesLogLoaded: true });
+    // } else {
+    //   await getUpdatesLog().then((result) => {
+    //     const formattedUpdatesLog = formatUpdatesLog(result.data);
+    //     lscache.set("updatesLog", formattedUpdatesLog, 60);
+    //     this.setState({
+    //       updatesLog: formattedUpdatesLog,
+    //       updatesLogLoaded: true,
+    //     });
+    //   });
+    // }
+
+    await getCachedStatesData().then((statesData) => {
       this.setState({ statesData, statesDataLoaded: true });
-    } else {
-      await getStatesData().then((result) => {
-        lscache.set("statesData", result.data, 60);
-        this.setState({ statesData: result.data, statesDataLoaded: true });
-      });
-    }
+    });
 
-    const updatesLog = lscache.get("updatesLog");
-    if (updatesLog !== null) {
+    await getCachedUpdatesLog().then((updatesLog) => {
       this.setState({ updatesLog, updatesLogLoaded: true });
-    } else {
-      await getUpdatesLog().then((result) => {
-        const formattedUpdatesLog = formatUpdatesLog(result.data);
-        lscache.set("updatesLog", formattedUpdatesLog, 60);
-        this.setState({
-          updatesLog: formattedUpdatesLog,
-          updatesLogLoaded: true,
-        });
-      });
-    }
+    });
 
-    // await getCachedUpdatesLog().then(
-    //   (updatesLog) => {
-    //     this.setState({ updatesLog, updatesLogLoaded: true });
-    //   },
-    //   (reject) => console.log(reject)
-    // );
+    // const statesData = await getCachedStatesData().then((result) => result);
+    // this.setState({ statesData, statesDataLoaded: true });
 
-    // await getCachedStatesData().then(
-    //   (statesData) => {
-    //     console.log(statesData);
-    //     this.setState({ statesData, statesDataLoaded: true });
-    //   },
-    //   (reject) => console.log(reject)
-    // );
+    // console.log(statesData);
+    // await getCachedStatesData().then((statesData) => {
+    //   console.log(statesData);
+    //   this.setState({ statesData, statesDataLoaded: true });
+    // });
   };
 
   getDropdown() {
     const { updatesLog, updatesLogLoaded } = this.state;
 
+    // loading updates
     if (!updatesLogLoaded) return <DropdownMenu>Loading...</DropdownMenu>;
 
-    if (updatesLog === {}) return <DropdownMenu>No Updates</DropdownMenu>;
-    else {
+    if (Object.keys(updatesLog).length === 0) {
+      return <DropdownMenu>No Updates</DropdownMenu>;
+    } else {
       return (
         <DropdownMenu>
           {Object.keys(updatesLog).map((date) => (
@@ -146,7 +150,7 @@ class App extends React.Component {
             path={webRoutes[route]}
             exact
             render={({ match }) => (
-              <StateDetails data={statesData} match={match} />
+              <StateDetails statesData={statesData} match={match} />
             )}
           />
         ))}
@@ -156,7 +160,7 @@ class App extends React.Component {
     );
   }
 
-  getRouter() {
+  appBody() {
     const { statesDataLoaded } = this.state;
 
     if (!statesDataLoaded) return "Loading...";
@@ -175,7 +179,7 @@ class App extends React.Component {
       <div className="cvt19app">
         <div className="cvt19app-navbar">{this.getNavbar()}</div>
 
-        {this.getRouter()}
+        {this.appBody()}
       </div>
     );
   }

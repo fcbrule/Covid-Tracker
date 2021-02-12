@@ -26,74 +26,23 @@ class StateDetails extends React.Component {
 
     return stateCode;
   }
-  getCardData = (data) => {
-    if (data === {}) return [];
 
-    const stateCode = this.getStateCode();
-
-    return getLocationStats(data, stateCode);
-  };
-
-  getTableRows = (data) => {
-    if (data === {}) return [];
-
-    const stateCode = this.getStateCode();
-
-    return getTableRows(data, stateCode);
-  };
-
-  getTableColumnNames = () => {
-    const stateCode = this.getStateCode();
-
-    if (stateCode === "TT")
-      return [
-        "State/UT",
-        "Confirmed",
-        "Active",
-        "Recovered",
-        "Deceased",
-        "Tested",
-      ];
-    else
-      return [
-        "District",
-        "Confirmed",
-        "Active",
-        "Recovered",
-        "Deceased",
-        "Tested",
-      ];
-  };
-
-  renderTable() {
-    const { data, match } = this.props;
-
-    const columnNames = this.getTableColumnNames();
-
-    const rows = this.getTableRows(data);
-
-    const isLink = columnNames[0] === "District";
-
-    if (rows.length === 0)
-      return <h1>No district data available for this state</h1>;
-    return (
-      <Table
-        columnNames={columnNames}
-        rows={rows}
-        match={match}
-        isLink={isLink}
-      />
-    );
-  }
-
-  renderHeading = () => {
+  getHeading = () => {
     return `Details for ${states[this.getStateCode()]}`;
   };
 
-  renderCards() {
-    const { data } = this.props;
+  getCardData = (statesData) => {
+    if (Object.keys(statesData).length === 0) return [];
 
-    const cardData = this.getCardData(data);
+    const stateCode = this.getStateCode();
+
+    return getLocationStats(statesData, stateCode);
+  };
+
+  getCards() {
+    const { statesData } = this.props;
+
+    const cardData = this.getCardData(statesData);
 
     return cardData.map((item) => (
       <Card style={CARD_STYLES[item.type]} key={item.type}>
@@ -110,17 +59,59 @@ class StateDetails extends React.Component {
     ));
   }
 
+  getTableColumnNames = () => {
+    const stateCode = this.getStateCode();
+
+    return [
+      stateCode === "TT" ? "State/UT" : "District",
+      "Confirmed",
+      "Active",
+      "Recovered",
+      "Deceased",
+      "Tested",
+    ];
+  };
+
+  getTableRows = (statesData) => {
+    if (Object.keys(statesData) === 0) return [];
+
+    const stateCode = this.getStateCode();
+
+    return getTableRows(statesData, stateCode);
+  };
+
+  getTable() {
+    const { statesData, match } = this.props;
+
+    const columnNames = this.getTableColumnNames();
+
+    const rows = this.getTableRows(statesData);
+
+    const isLink = columnNames[0] !== "District"; // if table row is link or not
+
+    if (rows.length === 0)
+      return <h1>No district data available for this state</h1>;
+    return (
+      <Table
+        columnNames={columnNames}
+        rows={rows}
+        match={match}
+        isLink={isLink}
+      />
+    );
+  }
+
   render() {
     if (states[this.getStateCode()] === undefined) {
       return <h1 className="cvt19heading">Invalid State Code</h1>;
     } else {
       return (
         <div>
-          <h1 className="cvt19heading">{this.renderHeading()}</h1>
+          <h1 className="cvt19heading">{this.getHeading()}</h1>
 
-          <div className="cvt19details">{this.renderCards()}</div>
+          <div className="cvt19details">{this.getCards()}</div>
 
-          <div className="cvt19table">{this.renderTable()}</div>
+          <div className="cvt19table">{this.getTable()}</div>
         </div>
       );
     }

@@ -7,12 +7,20 @@ function getAllSearchBarSuggestions(statesData) {
   Object.keys(statesData).forEach((stateCode) => {
     const state = states[stateCode];
 
-    locationsList.push({ name: state, code: stateCode });
+    locationsList.push({
+      title: state,
+      link: `/state/${stateCode}`,
+      adornment: `${stateCode}  ▶`,
+    });
     if (statesData[stateCode].districts !== undefined) {
       Object.keys(statesData[stateCode].districts).forEach((district) => {
-        const name = `${district}, ${state}`;
+        const districtName = `${district}, ${state}`;
 
-        locationsList.push({ name: name, code: stateCode });
+        locationsList.push({
+          title: districtName,
+          link: `/state/${stateCode}`,
+          adornment: `${stateCode}  ▶`,
+        });
       });
     }
   });
