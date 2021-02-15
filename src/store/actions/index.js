@@ -1,4 +1,4 @@
-import { getStatesData } from "../utils/api/statesData";
+import { getStatesData } from "../../utils/api/statesData";
 
 export const selectState = (state) => {
   return {

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import "./SearchBar.css";
 
@@ -12,13 +13,17 @@ class SearchBar extends React.Component {
 
   //whenever text is changed update the suggestions array
   onTextChanged = (e) => {
+    const { items } = this.props;
+
     const searchTerm = e.target.value;
+
     this.setState({ searchTerm });
 
     let suggestions = [];
     if (searchTerm.length > 0) {
       const regex = new RegExp(`^${searchTerm}`, "i");
-      suggestions = this.props.items.filter((item) => regex.test(item.name));
+
+      suggestions = items.filter((item) => regex.test(item.title));
     }
     if (suggestions.length > 10) {
       suggestions = suggestions.slice(0, 10);
@@ -39,11 +44,6 @@ class SearchBar extends React.Component {
     }
   };
 
-  getURL(stateCode) {
-    if (stateCode === "TT") return "/";
-    return `/state/${stateCode}`;
-  }
-
   renderSuggestions() {
     const { suggestions } = this.state;
     if (suggestions.length === 0) {
@@ -52,13 +52,12 @@ class SearchBar extends React.Component {
     return (
       <ul>
         {suggestions.map((item) => (
-          <Link
-            to={this.getURL(item.code)}
-            className="cvt19search-options"
-            key={item.name}
-          >
+          <Link to={item.link} className="cvt19search-options" key={item.title}>
             <li onClick={this.handleSuggestionClick}>
-              {item.name} <span>{item.code} &nbsp;▶</span>
+              {item.title}
+              <div className="cvt19search-options-adornment">
+                {item.adornment}
+              </div>
             </li>
           </Link>
         ))}
@@ -82,3 +81,16 @@ class SearchBar extends React.Component {
 }
 
 export default SearchBar;
+
+SearchBar.defaultProps = {
+  items: [],
+};
+
+SearchBar.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      link: PropTypes.string,
+    })
+  ),
+};

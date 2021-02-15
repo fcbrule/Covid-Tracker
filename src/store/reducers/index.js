@@ -1,4 +1,4 @@
-import { getStatesData } from "../utils/api/statesData";
+import { getStatesData } from "../../utils/api/statesData";
 import statesReducer from "./statesReducer";
 
 import { combineReducers } from "redux";

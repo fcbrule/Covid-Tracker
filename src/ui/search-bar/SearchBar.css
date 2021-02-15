@@ -13,6 +13,7 @@ html {
   width: 100%;
   border: 1px solid var(--cvt19search-bar-border-color);
   position: absolute;
+  border-radius: 15px;
   background-color: var(--cvt19search-bar-suggestions-background-color);
   margin: 20px 20px 0px;
   z-index: 1;
@@ -20,6 +21,7 @@ html {
 }
 
 .cvt19search-bar input {
+  border-radius: 15px;
   width: 100%;
   font-size: 25px;
   border: none;
@@ -48,7 +50,7 @@ html {
   text-decoration: none;
 }
 
-.cvt19search-options span {
+.cvt19search-options-adornment {
   float: right;
   padding-right: 5px;
   color: var(--cvt19search-bar-suggestions-icon-color);

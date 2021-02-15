@@ -1,11 +1,9 @@
 html {
   --cvt19app-search-label-text-color: rgb(255, 255, 255);
+  --cvt19app-text-color: rgb(255, 255, 255);
   --cvt19app-background-color: rgb(16, 44, 13);
   --cvt19navbar-background-color: rgba(12, 24, 10, 0.8);
   --cvt19navbar-text-color: white;
-  --cvt19notification-date-text-color: rgb(40, 217, 230);
-  --cvt19notification-time-text-color: orange;
-  --cvt19notification-text-color: white;
 }
 
 .cvt19app {
@@ -13,6 +11,7 @@ html {
   text-align: center;
   background-color: var(--cvt19app-background-color);
   align-items: center;
+  color: var(--cvt19app-text-color);
   justify-content: center;
   min-height: 100vh;
 }
@@ -38,23 +37,4 @@ html {
 
 .cvt19app-navbar {
   background-color: var(--cvt19navbar-background-color);
-}
-
-.cvt19notfication-date {
-  color: var(--cvt19notification-date-text-color);
-  font-size: 25px;
-}
-
-.cvt19notfication-time {
-  text-align: left;
-  font-size: 18px;
-  color: var(--cvt19notification-time-text-color);
-  padding-bottom: 6px;
-}
-
-.cvt19notfication-text {
-  text-align: left;
-  font-size: 21px;
-  padding-bottom: 8px;
-  color: var(--cvt19notification-text-color);
 }

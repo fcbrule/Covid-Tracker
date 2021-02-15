@@ -1,0 +1,24 @@
+html {
+  --cvt19notification-date-text-color: rgb(40, 217, 230);
+  --cvt19notification-time-text-color: orange;
+  --cvt19notification-text-color: white;
+}
+
+.cvt19notfication-date {
+  color: var(--cvt19notification-date-text-color);
+  font-size: 25px;
+}
+
+.cvt19notfication-time {
+  text-align: left;
+  font-size: 18px;
+  color: var(--cvt19notification-time-text-color);
+  padding-bottom: 6px;
+}
+
+.cvt19notfication-text {
+  text-align: left;
+  font-size: 21px;
+  padding-bottom: 8px;
+  color: var(--cvt19notification-text-color);
+}

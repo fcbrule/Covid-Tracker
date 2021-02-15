@@ -1,21 +1,24 @@
 import React from "react";
 
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-import insertCommasInNumbers from "../../utils/helpers/insertCommasInNumber";
-import sortTable from "../../utils/helpers/sortTable";
+import { insertCommasInNumbers, sortTable } from "../../utils/helpers";
+
 import states from "../../utils/constant/states";
 
-import { TableCell } from "./";
+import { TableCell } from ".";
 
 import "./Table.css";
 
 class Table extends React.Component {
-  state = { columnToSort: 0, ascending: true };
+  state = { columnToSort: 0, ascending: true, rows: this.props.rows };
+
   getTableCell(value, index) {
     if (Array.isArray(value)) {
+      // if the table cell has 2 values put them in the necessary format
       return (
-        <TableCell value={value} index={index}>
+        <TableCell index={index}>
           <div className="cvt19cell-value-change">
             {value[1] === 0 || value[1] === undefined
               ? ""
@@ -25,6 +28,7 @@ class Table extends React.Component {
         </TableCell>
       );
     } else {
+      // if the table cell has 1 value
       return (
         <TableCell value={value} index={index}>
           {insertCommasInNumbers(value)}
@@ -33,63 +37,27 @@ class Table extends React.Component {
     }
   }
 
+  // arrow which describes the sorting in the columns
   renderSortingArrow = (index) => {
     const { columnToSort, ascending } = this.state;
 
+    // if the column is not clicked
     if (index !== columnToSort) return "";
-    console.log(index);
+
     if (ascending) return "▲";
     else return "▼";
   };
 
-  handleLinkClick = (e) => {
-    const { isLink } = this.props;
-
-    if (isLink) {
-      e.preventDefault();
-    } else {
-      window.scrollTo(0, 0);
-    }
-  };
-
-  getURL(state) {
-    if (state === "India") return "/";
-
-    const stateCode = Object.keys(states).filter(
-      (stateCode) => states[stateCode] === state
-    );
-    return `/state/${stateCode}`;
-  }
-
-  getTableRows() {
-    let { rows, isLink } = this.props;
-    const { columnToSort, ascending } = this.state;
-    rows = sortTable(columnToSort, ascending, rows);
-    return (
-      <div>
-        {rows.map((row, index) => (
-          <Link
-            className="cvt19table-row"
-            to={this.getURL(row[0])}
-            onClick={(e) => this.handleLinkClick(e)}
-            key={`row ${index}`}
-            style={isLink ? { pointerEvents: "none" } : null}
-          >
-            {row.map((value) => (
-              <div className="cvt19row-cell" key={Math.random()}>
-                {this.getTableCell(value, index)}
-              </div>
-            ))}
-          </Link>
-        ))}
-      </div>
-    );
-  }
-
   handleColumnHeaderClick = (e, index) => {
     e.preventDefault();
-    const { ascending } = this.state;
-    this.setState({ columnToSort: index, ascending: !ascending });
+
+    this.setState((previousState) => {
+      return {
+        columnToSort: index,
+        ascending: !previousState.ascending,
+        rows: sortTable(index, !previousState.ascending, previousState.rows),
+      };
+    });
   };
 
   getTableHeaders() {
@@ -112,6 +80,50 @@ class Table extends React.Component {
       </div>
     );
   }
+  handleLinkClick = (e) => {
+    const { isLink } = this.props;
+
+    if (!isLink) {
+      e.preventDefault();
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
+
+  getUrl(state) {
+    if (state === "India") return "/";
+
+    const stateCode = Object.keys(states).filter(
+      (stateCode) => states[stateCode] === state
+    );
+    return `/state/${stateCode}`;
+  }
+
+  getTableRows() {
+    let { isLink } = this.props;
+
+    const { rows } = this.state;
+
+    return (
+      <div>
+        {rows.map((row, index) => (
+          <Link
+            className="cvt19table-row"
+            to={this.getUrl(row[0])}
+            onClick={(e) => this.handleLinkClick(e)}
+            key={`row ${index}`}
+            style={isLink ? null : { pointerEvents: "none" }}
+          >
+            {row.map((value) => (
+              <div className="cvt19row-cell" key={`${value} ${index}`}>
+                {this.getTableCell(value, index)}
+              </div>
+            ))}
+          </Link>
+        ))}
+      </div>
+    );
+  }
 
   render() {
     return (
@@ -125,3 +137,15 @@ class Table extends React.Component {
 }
 
 export default Table;
+
+Table.defaultProps = {
+  rows: [],
+  isLink: false,
+  columnNames: [],
+};
+
+Table.propTypes = {
+  rows: PropTypes.arrayOf(PropTypes.array),
+  columnNames: PropTypes.arrayOf(PropTypes.string),
+  isLink: PropTypes.bool,
+};
