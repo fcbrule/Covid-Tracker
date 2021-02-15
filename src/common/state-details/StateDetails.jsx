@@ -1,11 +1,14 @@
 import React from "react";
 
-import Table from "../../common/covid-table";
+import Table from "../covid-table";
 
-import getLocationStats from "../../utils/helpers/getLocationStats";
-import getTableRows from "../../utils/helpers/getTableRows";
+import {
+  getLocationStats,
+  getTableRows,
+  insertCommasInNumbers,
+} from "../../utils/helpers/";
+
 import states from "../../utils/constant/states";
-import insertCommasInNumbers from "../../utils/helpers/insertCommasInNumber";
 import CARD_STYLES from "../../utils/constant/cardStlyes";
 
 import Card from "../../ui/card";
@@ -45,16 +48,23 @@ class StateDetails extends React.Component {
     const cardData = this.getCardData(statesData);
 
     return cardData.map((item) => (
-      <Card style={CARD_STYLES[item.type]} key={item.type}>
-        <p className="cvt19card-title">{item.type}</p>
-        <p className="cvt19card-value-change">
+      <Card
+        backgroundColor={CARD_STYLES[item.type].backgroundColor}
+        key={item.type}
+      >
+        <p className="cvt19card-title" key={item.type}>
+          {item.type}
+        </p>
+        <p className="cvt19card-value-change" key={item.change}>
           {item.change === undefined ? (
             <br />
           ) : (
             `+${insertCommasInNumbers(item.change)}`
           )}
         </p>
-        <p className="cvt19card-value">{insertCommasInNumbers(item.count)}</p>
+        <p className="cvt19card-value" key={item.count}>
+          {insertCommasInNumbers(item.count)}
+        </p>
       </Card>
     ));
   }
@@ -90,7 +100,7 @@ class StateDetails extends React.Component {
     const isLink = columnNames[0] !== "District"; // if table row is link or not
 
     if (rows.length === 0)
-      return <h1>No district data available for this state</h1>;
+      return <h1>Sorry . . . No district data available</h1>;
     return (
       <Table
         columnNames={columnNames}

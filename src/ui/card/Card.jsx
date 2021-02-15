@@ -4,7 +4,10 @@ import "./Card.css";
 
 const Card = (props) => {
   return (
-    <div className="cvt19card" style={props.style}>
+    <div
+      className="cvt19card"
+      style={{ backgroundColor: props.backgroundColor }}
+    >
       {props.children}
     </div>
   );

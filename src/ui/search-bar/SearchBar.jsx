@@ -22,6 +22,7 @@ class SearchBar extends React.Component {
     let suggestions = [];
     if (searchTerm.length > 0) {
       const regex = new RegExp(`^${searchTerm}`, "i");
+
       suggestions = items.filter((item) => regex.test(item.title));
     }
     if (suggestions.length > 10) {
