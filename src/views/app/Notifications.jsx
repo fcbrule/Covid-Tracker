@@ -1,12 +1,16 @@
 import React from "react";
 
-import { getCachedUpdatesLog } from "../../utils/storage/getDataFromCache";
-
 import { ReactComponent as BellIcon } from "../../utils/icons/bell.svg";
 import DropdownMenu, { DropdownItem } from "../../ui/dropdown";
 import { NavItem } from "../../ui/navbar";
 
+import { connect } from "react-redux";
+
 import "./Notifications.css";
+
+import { fetchUpdates } from "../../store/updates/updatesActionCreators";
+
+import { handleError } from "../../utils/helpers";
 
 class Notifications extends React.Component {
   constructor(props) {
@@ -19,72 +23,71 @@ class Notifications extends React.Component {
     };
   }
   componentDidMount = async () => {
-    const updatesLog = await getCachedUpdatesLog();
-
-    if (updatesLog.name === "Error") {
-      this.setState({ error: updatesLog, errorDetected: true });
-    } else {
-      this.setState({
-        updatesLog,
-        updatesLogLoaded: true,
-      });
-    }
+    this.props.fetchUpdates();
   };
 
-  getDropdown() {
-    const { updatesLog, updatesLogLoaded } = this.state;
+  renderUpdates() {
+    const { updates } = this.props;
 
-    // loading updates
-    if (!updatesLogLoaded) {
-      return <DropdownMenu>Loading...</DropdownMenu>;
-    }
+    return Object.keys(updates).map((date) => (
+      <div key={date}>
+        <div className="cvt19notfication-date">{date}</div>
 
-    if (Object.keys(updatesLog).length === 0) {
-      return <DropdownMenu>No Updates</DropdownMenu>;
+        {Object.keys(updates[date]).map((relativeTime) => (
+          <DropdownItem key={relativeTime}>
+            <div className="cvt19notfication-time">{relativeTime}</div>
+
+            {updates[date][relativeTime].map((update) => (
+              <div className="cvt19notfication-text" key={`${update}`}>
+                {update}
+              </div>
+            ))}
+          </DropdownItem>
+        ))}
+      </div>
+    ));
+  }
+
+  fetchU;
+
+  getDropdownBody() {
+    const { isLoading, error, isEmpty } = this.props;
+
+    if (Object.keys(error).length !== 0) {
+      return <div className="cvt19notfication-date">{handleError(error)}</div>;
+    } else if (isLoading) {
+      return <div className="cvt19notfication-date">Loading...</div>;
+    } else if (isEmpty) {
+      return <div className="cvt19notfication-date">No Updates</div>;
     } else {
-      return (
-        <DropdownMenu>
-          {Object.keys(updatesLog).map((date) => (
-            <div key={date}>
-              <div className="cvt19notfication-date">{date}</div>
-              {Object.keys(updatesLog[date]).map((relativeTime) => (
-                <DropdownItem key={relativeTime}>
-                  <div className="cvt19notfication-time">{relativeTime}</div>
-
-                  {updatesLog[date][relativeTime].map((update) => (
-                    <div className="cvt19notfication-text" key={`${update}`}>
-                      {update}
-                    </div>
-                  ))}
-                </DropdownItem>
-              ))}
-            </div>
-          ))}
-        </DropdownMenu>
-      );
+      return this.renderUpdates();
     }
   }
 
   getNotificationsIcon() {
-    return <NavItem icon={<BellIcon />}>{this.getDropdown()}</NavItem>;
-  }
-
-  handleError() {
-    const { error } = this.state;
     return (
-      <div className="cvt19app">
-        {error.name} : {error.message}
-      </div>
+      <NavItem icon={<BellIcon />}>
+        <DropdownMenu>{this.getDropdownBody()}</DropdownMenu>
+      </NavItem>
     );
   }
+
   render() {
-    const { errorDetected } = this.state;
-    if (errorDetected) {
-      this.handleError();
-    } else {
-      return this.getNotificationsIcon();
-    }
+    return this.getNotificationsIcon();
   }
 }
 
-export default Notifications;
+const mapStateToProps = (state) => {
+  const { isLoading, updates, error } = state.updatesReducer;
+
+  const isEmpty = updates.length === 0;
+
+  return {
+    isLoading,
+    isEmpty,
+    updates,
+    error,
+  };
+};
+
+export default connect(mapStateToProps, { fetchUpdates })(Notifications);

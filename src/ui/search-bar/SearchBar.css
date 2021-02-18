@@ -50,6 +50,12 @@ html {
   text-decoration: none;
 }
 
+.cvt19search-options-active {
+  background-color: var(
+    --cvt19search-bar-suggestions-background-color-on-hover
+  );
+}
+
 .cvt19search-options-adornment {
   float: right;
   padding-right: 5px;

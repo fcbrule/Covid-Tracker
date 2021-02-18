@@ -14,6 +14,12 @@ import "./Table.css";
 class Table extends React.Component {
   state = { columnToSort: 0, ascending: true, rows: this.props.rows };
 
+  componentDidUpdate(nextProps) {
+    if (nextProps.rows !== this.props.rows) {
+      this.setState({ rows: nextProps.rows });
+    }
+  }
+
   getTableCell(value, index) {
     if (Array.isArray(value)) {
       // if the table cell has 2 values put them in the necessary format
@@ -115,7 +121,10 @@ class Table extends React.Component {
             style={isLink ? null : { pointerEvents: "none" }}
           >
             {row.map((value) => (
-              <div className="cvt19row-cell" key={`${value} ${index}`}>
+              <div
+                className="cvt19row-cell"
+                key={`state-${row[0]} ${value} ${index}`}
+              >
                 {this.getTableCell(value, index)}
               </div>
             ))}

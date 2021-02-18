@@ -87,6 +87,8 @@ class StateDetails extends React.Component {
 
     const stateCode = this.getStateCode();
 
+    console.log("table rows" + stateCode);
+
     return getTableRows(statesData, stateCode);
   };
 
@@ -101,6 +103,9 @@ class StateDetails extends React.Component {
 
     if (rows.length === 0)
       return <h1>Sorry . . . No district data available</h1>;
+
+    console.log(rows);
+
     return (
       <Table
         columnNames={columnNames}

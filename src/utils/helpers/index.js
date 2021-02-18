@@ -183,7 +183,10 @@ export function getTableRows(statesData, stateCode) {
         rows.push(row);
       }
     });
-    if (statesData["TT"] !== undefined) {
+    if (
+      statesData["TT"] !== undefined &&
+      statesData["TT"].delta !== undefined
+    ) {
       const { confirmed, recovered, deceased, tested } = statesData["TT"].total;
       const confirmedChange = statesData["TT"].delta.confirmed,
         recoveredChange = statesData["TT"].delta.recovered,
@@ -245,6 +248,7 @@ export function getTableRows(statesData, stateCode) {
       }
     });
   }
+  console.log(rows);
   return rows;
 }
 export function insertCommasInNumbers(number) {
@@ -275,4 +279,17 @@ export function compareBy(key, isAscending) {
 export function sortTable(columnNumber, isAscending, rows) {
   rows.sort(compareBy(columnNumber, isAscending));
   return rows;
+}
+
+export function handleError(error) {
+  return (
+    <div>
+      {error.name} : {error.message}
+    </div>
+  );
+}
+
+export function checkError(possibleErrorObject) {
+  if (possibleErrorObject.name === "Error") return true;
+  else return false;
 }

@@ -7,22 +7,21 @@ import {
   Switch,
 } from "react-router-dom";
 
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
+import { fetchStates } from "../../store/states/statesActionCreators";
 
 import SearchBar from "../../ui/search-bar";
 import Navbar from "../../ui/navbar";
 
-import { getAllSearchBarSuggestions } from "../../utils/helpers";
+import { getAllSearchBarSuggestions, handleError } from "../../utils/helpers";
 
 import webRoutes from "../../utils/router/webRoutes";
 
 import StateDetails from "../../common/state-details";
+import Notifications from "./Notifications";
 
 import "./App.css";
-// import { fetchStates } from "../../actions";
 
-import { getCachedStatesData } from "../../utils/storage/getDataFromCache";
-import Notifications from "./Notifications";
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -30,20 +29,10 @@ class App extends React.Component {
       statesData: {},
       statesDataLoaded: false,
       error: {},
-      errorDetected: false,
     };
   }
   componentDidMount = async () => {
-    const statesData = await getCachedStatesData();
-
-    if (statesData.name === "Error") {
-      this.setState({ error: statesData, errorDetected: true });
-    } else {
-      this.setState({
-        statesData,
-        statesDataLoaded: true,
-      });
-    }
+    this.props.fetchStates();
   };
 
   getNavbar() {
@@ -57,9 +46,9 @@ class App extends React.Component {
   }
 
   getSearchBar() {
-    const { statesData } = this.state;
+    const { states } = this.props;
 
-    const locationsList = getAllSearchBarSuggestions(statesData);
+    const locationsList = getAllSearchBarSuggestions(states);
 
     return (
       <div className="cvt19app-search-bar">
@@ -70,7 +59,7 @@ class App extends React.Component {
   }
 
   getRoutes() {
-    const { statesData } = this.state;
+    const { states } = this.props;
 
     return (
       <Switch>
@@ -80,7 +69,7 @@ class App extends React.Component {
             path={webRoutes[route]}
             exact
             render={({ match }) => (
-              <StateDetails statesData={statesData} match={match} />
+              <StateDetails statesData={states} match={match} />
             )}
           />
         ))}
@@ -91,10 +80,6 @@ class App extends React.Component {
   }
 
   appBody() {
-    const { statesDataLoaded } = this.state;
-
-    if (!statesDataLoaded) return "Loading...";
-
     return (
       <Router>
         {this.getSearchBar()}
@@ -104,20 +89,15 @@ class App extends React.Component {
     );
   }
 
-  handleError() {
-    const { error } = this.state;
-    return (
-      <div className="cvt19app">
-        {error.name} : {error.message}
-      </div>
-    );
-  }
-
   render() {
-    const { errorDetected } = this.state;
+    const { isLoading, error, isEmpty } = this.props;
 
-    if (errorDetected) {
-      this.handleError();
+    if (Object.keys(error).length !== 0) {
+      return handleError(error);
+    } else if (isLoading) {
+      return <p className="cvt19app">Loading...</p>;
+    } else if (isEmpty) {
+      return <p className="cvt19app">No data available at the moment...</p>;
     } else {
       return (
         <div className="cvt19app">
@@ -130,10 +110,18 @@ class App extends React.Component {
   }
 }
 
-// const mapStateToProps = (state) => {
-//   console.log(state);
-//   return { states: state.states };
-// };
+const mapStateToProps = (state) => {
+  const { isLoading, states, error } = state.statesReducer;
 
-export default App;
-// export default connect(null, { fetchStates })(App);
+  const isEmpty = Object.keys(states).length === 0;
+
+  return {
+    isLoading,
+    isEmpty,
+    states,
+    error,
+  };
+};
+
+// export default App;
+export default connect(mapStateToProps, { fetchStates })(App);
