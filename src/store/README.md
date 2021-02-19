@@ -7,7 +7,7 @@
   - Updates
 - Each entity is handled by the 2 main elements:
   - Actions
-  - Reducers.
+  - Reducers
 
 ## The structure
 
@@ -17,11 +17,11 @@ A collection of functions which return an action object which has a type propert
 
 ### Reducers
 
-Based on the action type the reducers' job is to return a state. General convention is to use a switch case on the "action.type"
+Based on the action type the reducers' job is to return a state. General convention is to use a switch case on the `action.type`
 
 ### Action types
 
-A collection of constants used by the actions and reducers. These constants are the different action types we want. (eg. DATA_LOADING, DATA_FETCHED, etc.)
+A collection of constants used by the actions and reducers. These constants are the different action types we want. (eg. `DATA_LOADING`, `DATA_FETCHED`, etc.)
 
 ## The Goal
 
@@ -51,9 +51,9 @@ We should create an initial state object initialised with 3 properties correspon
 
 ```json
 const initialState = {
-    isLoading = false ,
-    data = {},
-    error = {}
+    isLoading : false ,
+    data : {},
+    error : {}
 }
 ```
 
