@@ -248,7 +248,6 @@ export function getTableRows(statesData, stateCode) {
       }
     });
   }
-  console.log(rows);
   return rows;
 }
 export function insertCommasInNumbers(number) {

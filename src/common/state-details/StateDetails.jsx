@@ -82,12 +82,10 @@ class StateDetails extends React.Component {
     ];
   };
 
-  getTableRows = (statesData) => {
+  renderTableRows = (statesData) => {
     if (Object.keys(statesData) === 0) return [];
 
     const stateCode = this.getStateCode();
-
-    console.log("table rows" + stateCode);
 
     return getTableRows(statesData, stateCode);
   };
@@ -97,14 +95,14 @@ class StateDetails extends React.Component {
 
     const columnNames = this.getTableColumnNames();
 
-    const rows = this.getTableRows(statesData);
+    const rows = this.renderTableRows(statesData);
+
+    // console.log(rows);
 
     const isLink = columnNames[0] !== "District"; // if table row is link or not
 
     if (rows.length === 0)
       return <h1>Sorry . . . No district data available</h1>;
-
-    console.log(rows);
 
     return (
       <Table

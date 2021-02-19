@@ -14,18 +14,29 @@ import "./Table.css";
 class Table extends React.Component {
   state = { columnToSort: 0, ascending: true, rows: this.props.rows };
 
-  componentDidUpdate(nextProps) {
-    if (nextProps.rows !== this.props.rows) {
+  shouldComponentUpdate(nextProps) {
+    console.log(this.props.rows !== nextProps.rows);
+    if (this.props.rows !== nextProps.rows) {
       this.setState({ rows: nextProps.rows });
     }
+    return true;
   }
+
+  // componentWillUpdate(nextProps) {
+  //   if (this.props.rows !== nextProps.rows) {
+  //     this.setState({ rows: nextProps.rows });
+  //   }
+  // }
 
   getTableCell(value, index) {
     if (Array.isArray(value)) {
       // if the table cell has 2 values put them in the necessary format
       return (
         <TableCell index={index}>
-          <div className="cvt19cell-value-change">
+          <div
+            className="cvt19cell-value-change"
+            key={`cell ${value[0] * index + value[1]}`}
+          >
             {value[1] === 0 || value[1] === undefined
               ? ""
               : `+${insertCommasInNumbers(value[1])}`}
@@ -36,7 +47,7 @@ class Table extends React.Component {
     } else {
       // if the table cell has 1 value
       return (
-        <TableCell value={value} index={index}>
+        <TableCell value={value} index={index} key={`cell ${value * index}`}>
           {insertCommasInNumbers(value)}
         </TableCell>
       );
@@ -66,7 +77,7 @@ class Table extends React.Component {
     });
   };
 
-  getTableHeaders() {
+  renderTableHeaders() {
     const { columnNames } = this.props;
 
     return (
@@ -105,10 +116,12 @@ class Table extends React.Component {
     return `/state/${stateCode}`;
   }
 
-  getTableRows() {
+  renderTableRows() {
     let { isLink } = this.props;
 
     const { rows } = this.state;
+
+    // console.log(rows);
 
     return (
       <div>
@@ -123,7 +136,10 @@ class Table extends React.Component {
             {row.map((value) => (
               <div
                 className="cvt19row-cell"
-                key={`state-${row[0]} ${value} ${index}`}
+                // key={`state-${row[0]} ${
+                //   (isNaN(value) ? value[0] + value[1] : value) * index
+                // } ${index}`}
+                key={Math.random()}
               >
                 {this.getTableCell(value, index)}
               </div>
@@ -137,9 +153,9 @@ class Table extends React.Component {
   render() {
     return (
       <div>
-        {this.getTableHeaders()}
+        {this.renderTableHeaders()}
 
-        {this.getTableRows()}
+        {this.renderTableRows()}
       </div>
     );
   }
