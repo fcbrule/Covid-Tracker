@@ -1,14 +1,15 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import "./SearchBar.css";
+import { withRouter } from "react-router-dom";
 
 class SearchBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { searchTerm: "Search...", suggestions: [] };
+    this.state = { searchTerm: "Search...", suggestions: [], cursor: 0 };
   }
 
   //whenever text is changed update the suggestions array
@@ -31,9 +32,16 @@ class SearchBar extends React.Component {
     this.setState({ suggestions });
   };
 
-  //reset search bar when suggestion is clicked
-  handleSuggestionClick = (e) => {
+  handleSuggestionSelected = (link) => {
+    const { history } = this.props;
+
+    //reset search bar when suggestion is clicked
     this.setState({ searchTerm: "", suggestions: [] });
+
+    // <Redirect to={link} />;
+
+    history.push(link);
+    // window.location.reload();
   };
 
   //Clear the default text when search  bar is clicked
@@ -45,15 +53,23 @@ class SearchBar extends React.Component {
   };
 
   renderSuggestions() {
-    const { suggestions } = this.state;
+    const { suggestions, cursor } = this.state;
     if (suggestions.length === 0) {
       return null;
     }
+
     return (
       <ul>
-        {suggestions.map((item) => (
-          <Link to={item.link} className="cvt19search-options" key={item.title}>
-            <li onClick={this.handleSuggestionClick}>
+        {suggestions.map((item, index) => (
+          <Link
+            to={item.link}
+            // className="cvt19search-options"
+            className={`cvt19search-options ${
+              index === cursor ? "cvt19search-options-active" : ""
+            }`}
+            key={item.title}
+          >
+            <li onClick={() => this.handleSuggestionSelected(item.link)}>
               {item.title}
               <div className="cvt19search-options-adornment">
                 {item.adornment}
@@ -65,10 +81,34 @@ class SearchBar extends React.Component {
     );
   }
 
+  handleKeyDown = (key) => {
+    const { cursor, suggestions } = this.state;
+
+    // up key
+    if (key.keyCode === 38 && cursor > 0) {
+      this.setState((previousState) => ({
+        cursor: previousState.cursor - 1,
+      }));
+    }
+    // down key
+    else if (key.keyCode === 40 && cursor < suggestions.length - 1) {
+      this.setState((previousState) => ({
+        cursor: previousState.cursor + 1,
+      }));
+    }
+    //enter key
+    else if (key.keyCode === 13) {
+      const link = suggestions[cursor].link;
+
+      this.handleSuggestionSelected(link);
+    }
+  };
+
   render() {
     return (
       <div className="cvt19search-bar">
         <input
+          onKeyDown={this.handleKeyDown}
           onClick={this.handleSearchBarClick}
           type="text"
           value={this.state.searchTerm}
@@ -80,7 +120,7 @@ class SearchBar extends React.Component {
   }
 }
 
-export default SearchBar;
+export default withRouter(SearchBar);
 
 SearchBar.defaultProps = {
   items: [],
